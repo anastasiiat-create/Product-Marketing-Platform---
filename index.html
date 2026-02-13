@@ -6,6 +6,7 @@
   <title>Mobile Shop</title>
   <style>
     :root {
+      /* Світла палітра */
       --bg: #f8faff;
       --panel: #ffffff;
       --panel2: #f1f4f9;
@@ -16,13 +17,17 @@
       --accent2: #42a5f5;
       --r: 22px;
       --shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
+      --goldGlow: 0 0 0 3px rgba(0, 113, 227, 0.08), 0 16px 40px rgba(0, 0, 0, 0.08);
     }
     * { box-sizing: border-box; }
     html, body { height: 100%; }
     body {
       margin: 0;
-      font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
-      background: radial-gradient(900px 520px at 15% -10%, rgba(0, 113, 227, 0.12), transparent 62%), linear-gradient(180deg, #f8faff 0%, #ffffff 100%);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: 
+        radial-gradient(900px 520px at 15% -10%, rgba(0, 113, 227, 0.12), transparent 62%),
+        radial-gradient(850px 520px at 95% 0%, rgba(66, 165, 245, 0.1), transparent 58%),
+        linear-gradient(180deg, #f8faff 0%, #ffffff 100%);
       color: var(--text);
       -webkit-tap-highlight-color: transparent;
     }
@@ -33,7 +38,7 @@
       padding: max(16px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom));
     }
 
-    /* Header Fix */
+    /* Header */
     .topbar {
       display: flex;
       align-items: center;
@@ -46,16 +51,22 @@
       backdrop-filter: blur(12px);
       z-index: 10;
     }
+    
     .brand { 
       display: flex; 
       flex-direction: column; 
       align-items: center; 
+      gap: 2px; 
+      line-height: 1.1; 
       position: absolute; 
       left: 50%; 
-      transform: translateX(-50%);
+      transform: translateX(-50%); 
       text-align: center;
     }
-    .brand .title { font-weight: 900; font-size: 18px; color: var(--accent); }
+    .brand .title {
+      font-weight: 900; letter-spacing: .3px; font-size: 18px;
+      color: var(--accent);
+    }
     .brand .sub { color: var(--muted); font-size: 12.5px; }
     
     .btn {
@@ -69,8 +80,10 @@
       gap: 8px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
       cursor: pointer;
+      user-select: none;
       font-weight: 600;
     }
+    .btn:active { transform: translateY(1px); }
     .btn.primary {
       background: linear-gradient(135deg, #0071e3, #42a5f5);
       border: none;
@@ -78,15 +91,37 @@
       font-weight: 700;
       box-shadow: 0 8px 24px rgba(0, 113, 227, 0.3);
     }
-    .btn.primary:disabled { opacity: .45; }
+    .btn.primary:disabled { opacity: .45; cursor: not-allowed; }
     .btn.ghost { background: transparent; border-color: rgba(0, 0, 0, 0.1); color: var(--text); }
-    .icon { width: 18px; height: 18px; }
+    .icon { width: 18px; height: 18px; display: inline-block; }
 
+    /* Pages */
     .page { display: none; animation: fadeIn .18s ease-out; }
     .page.active { display: block; }
     @keyframes fadeIn { from { opacity: .35; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
-    .homeHeadline { text-align: center; font-weight: 900; font-size: 28px; margin: 12px 0 20px; }
+    /* Titles */
+    .sectionTitle {
+      font-weight: 800;
+      font-size: 17px;
+      margin: 10px 2px 12px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      color: var(--text);
+    }
+
+    /* Home headline */
+    .homeHeadline {
+      text-align: center;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      font-size: 28px;
+      color: var(--text);
+      margin: 12px 0 20px;
+    }
+
+    /* Grids */
     .grid { display: grid; gap: 14px; }
     .grid.twoCols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
@@ -96,154 +131,547 @@
       border-radius: var(--r);
       padding: 12px;
       box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      user-select: none;
+      min-height: 220px; 
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 220px;
+      transition: transform 0.2s ease;
     }
-    .thumb { width: 100%; height: 190px; object-fit: contain; border-radius: 14px; background: #f5f7fa; margin-bottom: 10px; }
-    .chip { padding: 6px 10px; border-radius: 999px; background: #f2f2f7; color: var(--accent); font-size: 11px; font-weight: 800; width: fit-content; }
+    .card:active { transform: scale(0.98); }
+    .card .label {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #f2f2f7;
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 800;
+      width: fit-content;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
 
-    /* Detail / Packing Animation */
-    .panel { border: 1px solid rgba(0, 0, 0, 0.05); background: var(--panel); border-radius: var(--r); padding: 16px; box-shadow: var(--shadow); }
-    .previewWrap { position: relative; border-radius: 18px; background: #f2f2f7; overflow: hidden; margin-bottom: 16px; transition: all 0.3s ease; }
-    .previewImg { width: 100%; height: 240px; object-fit: cover; transition: transform .55s ease, opacity .55s ease; }
+    /* Category images */
+    .thumb {
+      width: 100%;
+      height: 190px;
+      object-fit: contain;
+      border-radius: 14px;
+      display: block;
+      margin-bottom: 10px;
+      background: #f5f7fa;
+      padding: 6px;
+    }
 
-    .box { position: absolute; left: 50%; bottom: 24px; transform: translateX(-50%); width: 190px; height: 92px; border-radius: 14px; border: 2px solid var(--accent); background: #fff; opacity: 0; transition: opacity .2s ease; }
-    .boxLid { position: absolute; inset: -2px; height: 50px; border-radius: 14px; border: 2px solid var(--accent); background: #fff; transform-origin: 50% 100%; transform: rotateX(85deg); transition: transform .55s ease; }
-    
-    .check { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(.8); transition: all .35s ease; z-index: 5; }
-    .checkCircle { width: 80px; height: 80px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 12px 24px rgba(0,113,227,0.3); }
+    /* Sneakers grid page */
+    .gridSneakers {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .sneakerThumb {
+      width: 100%;
+      height: 200px; 
+      object-fit: contain;
+      border-radius: 14px;
+      display: block;
+      background: #f5f7fa;
+      padding: 6px;
+    }
 
+    /* Detail */
+    .panel {
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      background: var(--panel);
+      border-radius: var(--r);
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .previewWrap {
+      position: relative;
+      border-radius: 18px;
+      background: #f2f2f7;
+      overflow: hidden;
+      margin-bottom: 16px;
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+    .previewImg {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      display: block;
+      transition: transform .55s ease, opacity .55s ease;
+    }
+
+    /* BOX */
+    .box {
+      position: absolute;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%);
+      width: 190px;
+      height: 92px;
+      border-radius: 14px;
+      border: 2px solid var(--accent);
+      background: #ffffff;
+      box-shadow: 0 20px 40px rgba(0, 113, 227, 0.15);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease;
+    }
+    .box:after {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border-radius: 10px;
+      border: 1px dashed rgba(0, 113, 227, 0.3);
+    }
+    .boxLid {
+      position: absolute;
+      left: -2px; right: -2px;
+      top: -42px;
+      height: 50px;
+      border-radius: 14px;
+      border: 2px solid var(--accent);
+      background: #ffffff;
+      transform-origin: 50% 100%;
+      transform: rotateX(85deg);
+      transition: transform .55s ease;
+    }
+
+    /* Check */
+    .check {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: scale(.8);
+      transition: opacity .2s ease, transform .35s ease;
+      pointer-events: none;
+    }
+    .checkCircle {
+      width: 80px; height: 80px; border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 16px 30px rgba(0, 113, 227, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+    .check svg { width: 40px; height: 40px; }
+
+    /* CONFETTI */
+    .confetti {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      opacity: 0;
+      transition: opacity .15s ease;
+    }
+    .confetti i {
+      position: absolute;
+      top: -18px;
+      width: 10px; height: 14px;
+      border-radius: 3px;
+      animation: confettiFall 1100ms linear forwards;
+    }
+    @keyframes confettiFall {
+      to { transform: translateY(320px) rotate(360deg); }
+    }
+
+    /* Packed state */
     .previewWrap.packed .box { opacity: 1; }
     .previewWrap.packed .boxLid { transform: rotateX(0deg); }
-    .previewWrap.packed .previewImg { opacity: 0; transform: translateY(80px) scale(.2); }
-    .previewWrap.packed .check { opacity: 1; transform: scale(1); transition-delay: .5s; }
+    .previewWrap.packed .previewImg { opacity: 0; transform: translateY(100px) scale(.2); }
+    .previewWrap.packed .check { opacity: 1; transform: scale(1); transition-delay: .45s; }
+    .previewWrap.packed .confetti { opacity: 1; transition-delay: .45s; }
 
-    .colors { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .colorBtn { border: 1px solid rgba(0,0,0,0.08); padding: 12px; border-radius: 16px; display: flex; align-items: center; gap: 10px; cursor: pointer; }
-    .colorBtn.selected { border-color: var(--accent); background: rgba(0,113,227,0.05); }
-    .dot { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1px #ddd; }
+    /* Colors */
+    .colors {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 4px;
+    }
+    .colorBtn {
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      background: #f9f9fb;
+      border-radius: 16px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      user-select: none;
+      color: var(--text);
+      transition: all 0.2s ease;
+    }
+    .dot {
+      width: 20px; height: 20px; border-radius: 999px;
+      border: 2px solid #fff;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+      flex: 0 0 auto;
+    }
+    .colorName { font-weight: 700; font-size: 14px; }
+    .colorBtn.selected {
+      border-color: var(--accent);
+      background: rgba(0, 113, 227, 0.05);
+      box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.1);
+    }
 
-    .footerActions { display: flex; margin-top: 18px; }
-    .footerActions .btn { flex: 1; justify-content: center; height: 50px; }
+    .footerActions { display: flex; gap: 10px; margin-top: 18px; }
+    .footerActions .btn { flex: 1; justify-content: center; height: 50px; font-size: 16px; }
 
-    .confetti { position: absolute; inset: 0; pointer-events: none; }
-    .confetti i { position: absolute; top: -10px; width: 8px; height: 10px; animation: fall 1s linear forwards; }
-    @keyframes fall { to { transform: translateY(300px) rotate(360deg); } }
-
-    /* Blur Background */
-    body.is-packing .topbar, body.is-packing .colors, body.is-packing .footerActions { filter: blur(6px); opacity: 0.5; pointer-events: none; }
-    
     /* Toast */
-    .toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: 20px; background: #1d1d1f; color: #fff; padding: 12px 20px; border-radius: 12px; opacity: 0; transition: .3s; z-index: 100; pointer-events: none; }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(-10px); }
+    .toast {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: max(16px, env(safe-area-inset-bottom));
+      background: #1d1d1f;
+      color: #fff;
+      padding: 14px 20px;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      opacity: 0;
+      pointer-events: none;
+      transition: all .2s ease;
+      z-index: 50;
+      width: calc(100% - 32px);
+      max-width: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(-8px); }
+    .toast small { color: #a1a1a6; font-weight: 500; }
+
+    /* Blur Effect */
+    .topbar, .sectionTitle, .colors, .footerActions {
+      transition: filter 0.35s ease, opacity 0.35s ease;
+    }
+    .panel {
+      transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+    }
+
+    body.is-packing .topbar,
+    body.is-packing .sectionTitle,
+    body.is-packing .colors,
+    body.is-packing .footerActions {
+      filter: blur(8px);
+      opacity: 0.4;
+      pointer-events: none;
+    }
+    body.is-packing .panel {
+      background: transparent;
+      border-color: transparent;
+      box-shadow: none;
+    }
+    body.is-packing .previewWrap {
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+      transform: scale(1.02);
+      z-index: 20;
+    }
   </style>
 </head>
 <body>
   <div class="app">
     <div class="topbar">
-      <button class="btn ghost" id="backBtn" style="visibility:hidden"><svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Back</button>
-      <div class="brand"><div class="title" id="headerTitle">Shop</div><div class="sub" id="headerSub">Collection 2026</div></div>
-      <button class="btn" id="helpBtn" style="padding:10px"><svg class="icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+      <button class="btn ghost" id="backBtn" aria-label="Go back" style="visibility:hidden">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Back
+      </button>
+
+      <div class="brand">
+        <div class="title" id="headerTitle"></div>
+        <div class="sub" id="headerSub"></div>
+      </div>
+
+      <button class="btn" id="helpBtn" aria-label="Help">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <line x1="12" y1="17" x2="12.01" y2="17" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </button>
     </div>
 
     <section class="page active" data-page="home">
       <div class="homeHeadline">Everything for you</div>
+
       <div class="grid twoCols" id="categoryGrid">
-        <div class="card" data-category="sneakers">
-          <img class="thumb" src="https://i.pinimg.com/1200x/2b/1c/f2/2b1cf2c41fb9f0dd98192ad5a5f3ded8.jpg">
-          <div class="label">Sneakers</div><div class="chip">Browse</div>
+        <div class="card" data-category="trousers">
+          <div>
+            <img class="thumb" src="https://i.pinimg.com/736x/7c/9e/9a/7c9e9a3a79ff2610759c619951c15703.jpg" alt="Trousers">
+            <div class="label">Trousers</div>
+          </div>
+          <div class="chip">Browse</div>
         </div>
+
+        <div class="card" data-category="blouse">
+          <div>
+            <img class="thumb" src="https://i.pinimg.com/1200x/43/b5/30/43b530017dcf7d9bc59a6b69b5d0638c.jpg" alt="Blouse">
+            <div class="label">Blouse</div>
+          </div>
+          <div class="chip">Browse</div>
+        </div>
+
+        <div class="card" data-category="sneakers">
+          <div>
+            <img class="thumb" src="https://i.pinimg.com/1200x/2b/1c/f2/2b1cf2c41fb9f0dd98192ad5a5f3ded8.jpg" alt="Sneakers">
+            <div class="label">Sneakers</div>
+          </div>
+          <div class="chip">Browse</div>
+        </div>
+
+        <div class="card" data-category="accessories">
+          <div>
+            <img class="thumb" src="https://i.pinimg.com/736x/18/f5/49/18f549d91b4a6da5741f7230591dd5a4.jpg" alt="Accessories">
+            <div class="label">Accessories</div>
+          </div>
+          <div class="chip">Browse</div>
+        </div>
+
         <div class="card" data-category="bag">
-          <img class="thumb" src="https://i.pinimg.com/1200x/53/bd/a9/53bda91772061b40423cc5c25296fe5e.jpg">
-          <div class="label">Bags</div><div class="chip">Browse</div>
+          <div>
+            <img class="thumb" src="https://i.pinimg.com/1200x/53/bd/a9/53bda91772061b40423cc5c25296fe5e.jpg" alt="Bag">
+            <div class="label">Bag</div>
+          </div>
+          <div class="chip">Browse</div>
+        </div>
+
+        <div class="card" data-category="headdress">
+          <div>
+            <img class="thumb" src="https://i.pinimg.com/736x/4d/ff/d2/4dffd24dbd1c50aaf096de88c30f1048.jpg" alt="Headdress">
+            <div class="label">Headdress</div>
+          </div>
+          <div class="chip">Browse</div>
         </div>
       </div>
     </section>
 
     <section class="page" data-page="sneakers">
-      <div class="grid twoCols" id="sneakerGrid">
-        <div class="card"><img class="thumb" src="https://i.pinimg.com/736x/65/6f/0b/656f0b9486741ee5e3399a8dce5c7188.jpg"></div>
-        <div class="card"><img class="thumb" src="https://i.pinimg.com/736x/45/9f/ab/459fab5e7b66f2cc247f8a13b838f92b.jpg"></div>
+      <div class="sectionTitle"><span>Sneakers</span></div>
+      <div class="gridSneakers" id="sneakerImageGrid">
+        <div class="card"><img class="sneakerThumb" src="https://i.pinimg.com/736x/65/6f/0b/656f0b9486741ee5e3399a8dce5c7188.jpg" alt=""></div>
+        <div class="card"><img class="sneakerThumb" src="https://i.pinimg.com/736x/45/9f/ab/459fab5e7b66f2cc247f8a13b838f92b.jpg" alt=""></div>
+        <div class="card"><img class="sneakerThumb" src="https://i.pinimg.com/1200x/09/21/7b/09217b3a64e2489eeba760dffc51680a.jpg" alt=""></div>
+        <div class="card"><img class="sneakerThumb" src="https://i.pinimg.com/736x/c8/7f/6e/c87f6e87aa32a673c14338337e15c65a.jpg" alt=""></div>
+        <div class="card"><img class="sneakerThumb" src="https://i.pinimg.com/736x/0d/c5/d3/0dc5d352166834c59594896c76c8e7cc.jpg" alt=""></div>
+        <div class="card"><img class="sneakerThumb" src="https://i.pinimg.com/1200x/82/91/f4/8291f4988c1e499debd32050bd68f84f.jpg" alt=""></div>
       </div>
     </section>
 
     <section class="page" data-page="detail">
+      <div class="sectionTitle"><span>Selection</span></div>
       <div class="panel">
         <div class="previewWrap" id="previewWrap">
-          <img class="previewImg" id="previewImg">
-          <div class="box"><div class="boxLid"></div></div>
-          <div class="check"><div class="checkCircle"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div></div>
-          <div class="confetti" id="confetti"></div>
+          <img class="previewImg" id="previewImg" src="" alt="">
+          <div class="box" aria-hidden="true"><div class="boxLid"></div></div>
+          <div class="confetti" id="confetti" aria-hidden="true"></div>
+          <div class="check" aria-hidden="true">
+            <div class="checkCircle">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
         </div>
+
         <div class="colors" id="colorGrid">
-          <div class="colorBtn" data-color="Red"><span class="dot" style="background:#ff3b30"></span>Red</div>
-          <div class="colorBtn" data-color="Black"><span class="dot" style="background:#1c1c1e"></span>Black</div>
+          <div class="colorBtn" data-color="Red">
+            <span class="dot" style="background:#ff3b30"></span>
+            <span class="colorName">Red</span>
+          </div>
+          <div class="colorBtn" data-color="Black">
+            <span class="dot" style="background:#1c1c1e"></span>
+            <span class="colorName">Black</span>
+          </div>
+          <div class="colorBtn" data-color="White">
+            <span class="dot" style="background:#ffffff"></span>
+            <span class="colorName">White</span>
+          </div>
+          <div class="colorBtn" data-color="Brown">
+            <span class="dot" style="background:#a2845e"></span>
+            <span class="colorName">Brown</span>
+          </div>
         </div>
+
         <div class="footerActions">
-          <button class="btn primary" id="insightBtn" disabled>Get insights</button>
+          <button class="btn primary" id="insightBtn" disabled>Get insights on</button>
         </div>
       </div>
     </section>
   </div>
 
-  <div class="toast" id="toast"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <div>
+      <div id="toastText" style="font-weight:700">Hello</div>
+      <small id="toastSub">—</small>
+    </div>
+    <button class="btn ghost" id="toastClose" style="padding:6px 12px; border:none; color:#fff">OK</button>
+  </div>
 
   <script>
-    const pages = { home: document.querySelector('[data-page="home"]'), sneakers: document.querySelector('[data-page="sneakers"]'), detail: document.querySelector('[data-page="detail"]') };
-    const state = { history: ['home'], color: null };
+    const pages = {
+      home: document.querySelector('[data-page="home"]'),
+      sneakers: document.querySelector('[data-page="sneakers"]'),
+      detail: document.querySelector('[data-page="detail"]')
+    };
 
-    function navigate(to) {
-      Object.values(pages).forEach(p => p.classList.remove('active'));
-      pages[to].classList.add('active');
-      document.getElementById('backBtn').style.visibility = to === 'home' ? 'hidden' : 'visible';
+    const backBtn = document.getElementById('backBtn');
+    const helpBtn = document.getElementById('helpBtn');
+    const headerTitle = document.getElementById('headerTitle');
+    const headerSub = document.getElementById('headerSub');
+
+    const toast = document.getElementById('toast');
+    const toastText = document.getElementById('toastText');
+    const toastSub = document.getElementById('toastSub');
+    const toastClose = document.getElementById('toastClose');
+
+    const previewWrap = document.getElementById('previewWrap');
+    const previewImg = document.getElementById('previewImg');
+    const colorGrid = document.getElementById('colorGrid');
+    const insightBtn = document.getElementById('insightBtn');
+    const confetti = document.getElementById('confetti');
+
+    const state = {
+      history: ['home'],
+      sneakerSrc: '',
+      color: null
+    };
+
+    function setHeaderFor(page){
+      if(page === 'home'){
+        headerTitle.textContent = 'Shop';
+        headerSub.textContent = 'Collection 2026';
+      } else {
+        headerTitle.textContent = page.charAt(0).toUpperCase() + page.slice(1);
+        headerSub.textContent = '';
+      }
+      backBtn.style.visibility = (page === 'home') ? 'hidden' : 'visible';
     }
 
-    document.getElementById('categoryGrid').onclick = (e) => {
-      if(e.target.closest('[data-category="sneakers"]')) { state.history.push('sneakers'); navigate('sneakers'); }
-    };
+    function navigate(to){
+      Object.values(pages).forEach(p => p.classList.remove('active'));
+      pages[to].classList.add('active');
+      setHeaderFor(to);
+      window.scrollTo({top:0, behavior:'instant'});
+    }
 
-    document.getElementById('sneakerGrid').onclick = (e) => {
-      const img = e.target.closest('img');
-      if(img) {
-        document.getElementById('previewImg').src = img.src;
-        document.body.classList.remove('is-packing');
-        document.getElementById('previewWrap').classList.remove('packed');
-        state.history.push('detail');
-        navigate('detail');
-      }
-    };
+    function pushPage(to){
+      const current = state.history[state.history.length - 1];
+      if(current !== to) state.history.push(to);
+      navigate(to);
+    }
 
-    document.getElementById('backBtn').onclick = () => {
+    function popPage(){
+      if(state.history.length <= 1) return;
       state.history.pop();
       document.body.classList.remove('is-packing');
-      navigate(state.history[state.history.length-1]);
-    };
+      navigate(state.history[state.history.length - 1]);
+    }
 
-    document.getElementById('colorGrid').onclick = (e) => {
+    backBtn.addEventListener('click', popPage);
+
+    let toastTimer = null;
+    function showToast(title, sub = ''){
+      toastText.textContent = title;
+      toastSub.textContent = sub;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2300);
+    }
+    toastClose.addEventListener('click', () => toast.classList.remove('show'));
+
+    helpBtn.addEventListener('click', () => {
+      showToast('Guide', 'Choose category → select item → choose color.');
+    });
+
+    document.getElementById('categoryGrid').addEventListener('click', (e) => {
+      const card = e.target.closest('.card');
+      if(!card) return;
+      const cat = card.getAttribute('data-category');
+      if(cat === 'sneakers') pushPage('sneakers');
+      else showToast('Coming soon', 'This section is under development.');
+    });
+
+    document.getElementById('sneakerImageGrid').addEventListener('click', (e) => {
+      const img = e.target.closest('img');
+      if(!img) return;
+      document.body.classList.remove('is-packing');
+      
+      state.sneakerSrc = img.getAttribute('src');
+      state.color = null;
+      previewWrap.classList.remove('packed');
+      previewImg.src = state.sneakerSrc;
+      confetti.innerHTML = '';
+      [...colorGrid.querySelectorAll('.colorBtn')].forEach(b => b.classList.remove('selected'));
+      insightBtn.disabled = true;
+      pushPage('detail');
+    });
+
+    function updateButton(){
+      insightBtn.disabled = !state.color;
+    }
+
+    colorGrid.addEventListener('click', (e) => {
       const btn = e.target.closest('.colorBtn');
-      if(btn) {
-        document.querySelectorAll('.colorBtn').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-        state.color = btn.dataset.color;
-        document.getElementById('insightBtn').disabled = false;
-      }
-    };
+      if(!btn || previewWrap.classList.contains('packed')) return;
+      state.color = btn.getAttribute('data-color');
+      [...colorGrid.querySelectorAll('.colorBtn')].forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      updateButton();
+    });
 
-    document.getElementById('insightBtn').onclick = () => {
+    function spawnConfetti(){
+      confetti.innerHTML = '';
+      const colors = ['#0071e3', '#42a5f5', '#ff3b30', '#34c759', '#ffcc00'];
+      for(let i=0; i<48; i++){
+        const p = document.createElement('i');
+        p.style.left = Math.random() * 100 + '%';
+        p.style.animationDelay = Math.random() * 200 + 'ms';
+        p.style.animationDuration = 800 + Math.random()*600 + 'ms';
+        p.style.width = 6 + Math.random()*8 + 'px';
+        p.style.height = 8 + Math.random()*12 + 'px';
+        p.style.background = colors[Math.floor(Math.random()*colors.length)];
+        p.style.transform = `rotate(${Math.random()*360}deg)`;
+        confetti.appendChild(p);
+      }
+      setTimeout(() => { confetti.innerHTML = ''; }, 2200);
+    }
+
+    insightBtn.addEventListener('click', () => {
+      if(insightBtn.disabled || previewWrap.classList.contains('packed')) return;
+      insightBtn.disabled = true;
+
       document.body.classList.add('is-packing');
+
       setTimeout(() => {
-        document.getElementById('previewWrap').classList.add('packed');
-        const cf = document.getElementById('confetti');
-        for(let i=0; i<30; i++) {
-          const el = document.createElement('i');
-          el.style.left = Math.random()*100+'%';
-          el.style.background = ['#0071e3','#ff3b30','#ffcc00'][Math.floor(Math.random()*3)];
-          cf.appendChild(el);
-        }
-      }, 400);
-    };
+        previewWrap.classList.add('packed');
+        spawnConfetti();
+        /* Текст видалено */
+      }, 350);
+    });
+
+    window.addEventListener('keydown', (e) => { if(e.key === 'Escape') popPage(); });
+    setHeaderFor('home');
   </script>
 </body>
 </html>
